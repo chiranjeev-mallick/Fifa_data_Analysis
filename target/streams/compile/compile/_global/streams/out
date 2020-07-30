@@ -1,2 +1,9 @@
-[debug] Acquiring lock on file C:\Users\vn022vj\Downloads\Fifa_data\project\target\.sbt-compilation-infos\fifa_data-compile\.sbt-idea-lock ...
-[debug] Releasing lock on file C:\Users\vn022vj\Downloads\Fifa_data\project\target\.sbt-compilation-infos\fifa_data-compile\.sbt-idea-lock.
+[debug] Acquiring lock on file C:\Users\vn022vj\Downloads\Fifa_data_Analysis-master\project\target\.sbt-compilation-infos\fifa_data_analysis-master-compile\.sbt-idea-lock ...
+[warn] C:\Users\vn022vj\Downloads\Fifa_data_Analysis-master\src\main\scala\Fifa_data.scala:46:5: a pure expression does nothing in statement position; you may be omitting necessary parentheses
+[warn]     Read_FifaData
+[warn]     ^
+[warn] C:\Users\vn022vj\Downloads\Fifa_data_Analysis-master\src\main\scala\Fifa_read_write.scala:31:5: a pure expression does nothing in statement position; you may be omitting necessary parentheses
+[warn]     fifaFiles
+[warn]     ^
+[warn] two warnings found
+[debug] Releasing lock on file C:\Users\vn022vj\Downloads\Fifa_data_Analysis-master\project\target\.sbt-compilation-infos\fifa_data_analysis-master-compile\.sbt-idea-lock.

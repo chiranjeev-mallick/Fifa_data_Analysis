@@ -1,0 +1,80 @@
+FIFA19 DATA ANALYSIS:
+---------------------
+Solution:
+
+1.TO handle fifa daily delta dataset after reading the dataset i saved the dataset  in hdfs location with filename with current timestamp
+Eg.
+-------------------------------------------------
+|Read_FifaData.write.format("csv").save(Path)|
+------------------------------------------------- 
+
+-------------------------------
+|val filename="Fifa"+timestamp|
+-------------------------------
+After that I read with existing file from hdfs path and compare with new dataset by reading applyting joining condition and checking for new Records
+if there is new record then it append with new record .
+
+2.
+(a)To find midfielder leftfooted under 30 age. i used fliter keyword with required condition.
+position in(RWM RM RCM CM CAM CDM LCM LM LWM) for midfielder and prefered-foot for left footed and age column for filter under 30 player.
+
+(b)Strongest team by overall rating for 4-4-2 formation i filter the position in("GK","RB","CB","RCB","CB","LCB","LB","RM","RWM","LCM","CM","RCM","CM","LM","LWM","RF","CF","LF","ST")
+then calculate the avg of overall column with grouping the Club to find out strongest player.and add rank column for ranking purpose.
+
+(c)Before finding expensive squad value i cleaned Wage and Value columns from currency to normal numbers for calculation purposes.
+then by summing values by nationality wise grouped the data and used the rank function to get top1 squad which has more value than others.
+and for the comparing with the strongest squad having highest wage i took the sum of wages wrt nationality and give the ranking to data by sum values and compared the both data by inner join and took the count of join data.
+
+(d)To find out position have  highest wages . calculated by taking avg of wage by groupin positions and give the rank to get the highes wage position.
+(e)TO become a good goalkeeper i just assume that the overall rating should be more than 80 and position should be "GK" and finding the avg of attributes, i assumed
+that by  below 4 attributes are  most relavatent to become good goalkeeper by comparing all the avg values.
++-----------------+------------------+-------------------+-----------------+------------------+-----------------+------------------+------------------+-----------------+------------------+------------------+-----------------+------------------+-----------------+-----------------+-----------------+-----------------+------------------+-----------------+------------------+-----------------+------------------+------------------+-----------------+------------------+-----------------+------------------+------------------+------------------+----------------+-----------------+----------------+-----------------+-----------------+
+|     avg_Crossing|     avg_Finishing|avg_HeadingAccuracy| avg_ShortPassing|       avg_Volleys|    avg_Dribbling|         avg_Curve|    avg_FKAccuracy|  avg_LongPassing|   avg_BallControl|  avg_Acceleration|  avg_SprintSpeed|       avg_Agility|    avg_Reactions|      avg_Balance|    avg_ShotPower|      avg_Jumping|       avg_Stamina|     avg_Strength|     avg_LongShots|   avg_Aggression| avg_Interceptions|   avg_Positioning|       avg_Vision|     avg_Penalties|    avg_Composure|       avg_Marking|avg_StandingTackle| avg_SlidingTackle|    avg_GKDiving|   avg_GKHandling|   avg_GKKicking|avg_GKPositioning|      GKReflexes1|
++-----------------+------------------+-------------------+-----------------+------------------+-----------------+------------------+------------------+-----------------+------------------+------------------+-----------------+------------------+-----------------+-----------------+-----------------+-----------------+------------------+-----------------+------------------+-----------------+------------------+------------------+-----------------+------------------+-----------------+------------------+------------------+------------------+----------------+-----------------+----------------+-----------------+-----------------+
+|14.63265306122449|12.775510204081632| 14.122448979591837|34.55102040816327|13.775510204081632|15.63265306122449|15.040816326530612|15.183673469387756|34.08163265306123|23.489795918367346|48.857142857142854|50.38775510204081|51.224489795918366|79.87755102040816|45.53061224489796|24.26530612244898|69.34693877551021|36.224489795918366|67.77551020408163|14.326530612244898|31.06122448979592|20.918367346938776|13.183673469387756|52.91836734693877|23.040816326530614|62.02040816326531|17.306122448979593| 14.36734693877551|13.795918367346939|83.6938775510204|81.46938775510205|75.6938775510204|82.22448979591837|85.10204081632654|
++-----------------+------------------+-------------------+-----------------+------------------+-----------------+------------------+------------------+-----------------+------------------+------------------+-----------------+------------------+-----------------+-----------------+-----------------+-----------------+------------------+-----------------+------------------+-----------------+------------------+------------------+-----------------+------------------+-----------------+------------------+------------------+------------------+----------------+-----------------+----------------+-----------------+-----------------+
+4 relevant attributes:
+----------------------
+ GKDiving| 
+ GKHandling
+ GKPositioning
+ GKReflexes
+ 
+ (f)A good striker always have good overrall rating and having max avg than other player.To calcute good stricker i again took position is "ST" and taking avg of other attributes ,i assumes 
+ that below 5 attiributes are most relevant to become a goood stricker.
+ +------------+-------------+-------------------+----------------+-----------+-------------+---------+--------------+---------------+---------------+----------------+---------------+-----------+-------------+-----------+-------------+-----------+-----------+------------+-------------+--------------+-----------------+---------------+----------+-------------+-------------+-----------+------------------+------------+--------------+-------------+-----------------+----------+
+|avg_Crossing|avg_Finishing|avg_HeadingAccuracy|avg_ShortPassing|avg_Volleys|avg_Dribbling|avg_Curve|avg_FKAccuracy|avg_LongPassing|avg_BallControl|avg_Acceleration|avg_SprintSpeed|avg_Agility|avg_Reactions|avg_Balance|avg_ShotPower|avg_Jumping|avg_Stamina|avg_Strength|avg_LongShots|avg_Aggression|avg_Interceptions|avg_Positioning|avg_Vision|avg_Penalties|avg_Composure|avg_Marking|avg_StandingTackle|avg_GKDiving|avg_GKHandling|avg_GKKicking|avg_GKPositioning|GKReflexes|
++------------+-------------+-------------------+----------------+-----------+-------------+---------+--------------+---------------+---------------+----------------+---------------+-----------+-------------+-----------+-------------+-----------+-----------+------------+-------------+--------------+-----------------+---------------+----------+-------------+-------------+-----------+------------------+------------+--------------+-------------+-----------------+----------+
+|    67.15625|       85.625|           78.96875|        77.46875|    81.5625|     80.71875| 73.65625|        65.125|       62.21875|       82.40625|        76.53125|         77.875|    72.6875|     84.28125|    67.6875|     84.15625|   76.34375|   75.21875|    77.40625|      77.6875|      68.46875|         35.96875|       86.59375|     74.75|     79.40625|      82.1875|     39.875|          34.28125|       10.75|        10.875|      9.96875|         10.34375|   9.53125|
++------------+-------------+-------------------+----------------+-----------+-------------+---------+--------------+---------------+---------------+----------------+---------------+-----------+-------------+-----------+-------------+-----------+-----------+------------+-------------+--------------+-----------------+---------------+----------+-------------+-------------+-----------+------------------+------------+--------------+-------------+-----------------+----------+
+5 relevant attiributes:
+Finishing
+ShotPower
+BallControl
+Reactions
+Volleys
+
+
+3.
+After readng the data.csv file i have created a dataframe with relevent attribute for saving postgre.and then write data into that table.
+Eg-  Postgre_file.write.option('driver', 'org.postgresql.Driver'').jdbc(url_connect, table, mode, properties)
+root
+ |-- Overall_Rating: integer (nullable = true)
+ |-- Position: string (nullable = true)
+ |-- Country: string (nullable = true)
+ |-- Name: string (nullable = true)
+ |-- Club Name: string (nullable = true)
+ |-- Wage: decimal(20,5) (nullable = true)
+ |-- Value: decimal(20,2) (nullable = true)
+ |-- joined: date (nullable = true)
+ |-- Age: integer (nullable = true)
+And to save data in Postgre using Docker
+below steps we have to take
+Open docker terminal.
+	run docker pull postgres:11.5.
+	run docker run --name [container_name] -e POSTGRES_PASSWORD=[your_password] -d postgres.
+	verify whether postgres container is created, run docker ps.
+	login into postgres database, run psql -U postgres.
+	check existing database list, run \l.
+	create new database by running CREATE DATABASE [database_name] or take existing database for this project.
+	

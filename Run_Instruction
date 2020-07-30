@@ -1,0 +1,10 @@
+Run Instruction.
+-------------------
+
+Before run just Create two folder:-Input and Output
+then Put the data.csv file in inputfolder.
+And output folder path structure should be as per Code.("C:\\Project\\Output\\Fifa\\*\\") 
+and output folder should have data file structure with headers.
+please copy the inputdata file path to use in argument.
+after creation please submit the spark-submit command that i mentioned below:
+spark-submit --master local --driver-memory 2g --executor-memory  2g  --class Fifa_Data --jar env:Downloads\Fifa_data_Analysis-master\target\scala-2.11\fifa_data_2.11-0.1.jar <inputfile_path/.data.csv>

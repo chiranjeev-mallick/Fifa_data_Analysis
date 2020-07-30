@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<module external.linked.project.id="fifa_data [file:/C:/Users/vn022vj/Downloads/Fifa_data/]" external.linked.project.path="$MODULE_DIR$/../.." external.root.project.path="$MODULE_DIR$/../.." external.system.id="SBT" type="JAVA_MODULE" version="4">
+<module external.linked.project.id="fifa_data_analysis-master [file:/C:/Users/vn022vj/Downloads/Fifa_data_Analysis-master/]" external.linked.project.path="$MODULE_DIR$/../.." external.root.project.path="$MODULE_DIR$/../.." external.system.id="SBT" type="JAVA_MODULE" version="4">
   <component name="NewModuleRootManager" LANGUAGE_LEVEL="JDK_1_8">
     <output url="file://$MODULE_DIR$/../../target/scala-2.11/classes" />
     <output-test url="file://$MODULE_DIR$/../../target/scala-2.11/test-classes" />
@@ -31,6 +31,7 @@
     <orderEntry type="library" name="sbt: com.thoughtworks.paranamer:paranamer:2.8:jar" level="project" />
     <orderEntry type="library" name="sbt: com.twitter:chill-java:0.9.3:jar" level="project" />
     <orderEntry type="library" name="sbt: com.twitter:chill_2.11:0.9.3:jar" level="project" />
+    <orderEntry type="library" name="sbt: com.typesafe:config:1.2.1:jar" level="project" />
     <orderEntry type="library" name="sbt: com.univocity:univocity-parsers:2.7.3:jar" level="project" />
     <orderEntry type="library" name="sbt: com.vlkan:flatbuffers:1.2.0-3f79e055:jar" level="project" />
     <orderEntry type="library" name="sbt: commons-beanutils:commons-beanutils-core:1.8.0:jar" level="project" />

@@ -1,31 +1,62 @@
-import javafx.beans.binding.When
-import org.apache.spark.sql.SparkSession
-import org.apache.spark.sql.functions._
-import org.apache.spark.sql.DataFrame
-import org.apache.spark.sql.expressions.Window
-import scala.collection.Seq
+
+
 import java.sql.Timestamp
-import  java.text.SimpleDateFormat
+import java.text.SimpleDateFormat
 import java.util.Calendar
-import org.apache.spark.sql.types._
+
+import com.mavric.fifa.spark.PropertiesLoader
+import com.mavric.fifa.spark.PropertiesLoader.properties
+import org.apache.spark.sql.functions._
+import org.apache.spark.sql.expressions.Window
+
+import scala.collection.Seq
+import com.mavric.fifa.spark.SparkConnection
 
 object Fifa_data {
   def main(args: Array[String]): Unit = {
-    val spark = SparkSession.builder
-      .master("local[1]")
-      .appName("Fifa_data")
-      .getOrCreate()
+
+    val sc = new SparkConnection
+    val spark =sc.getSparkSession("Fifa_Data")
 
     import spark.implicits._
 
     val Read_FifaData = spark.read
       .option("endian", "little") //hadnle symbolic charcter
-      .option("header", true)
-      .option("inferschema", true)
+      .option("header", "true")
+      .option("inferschema", "true")
       .option("encoding", "UTF-8") //handle special charcter
-      .csv("C:/Users/vn022vj/Downloads/Fifa_data/target/data.csv")
+      .csv(args(0))
       .withColumnRenamed("_c0", "rownum")
 
+
+    def getCurrentTimestamp: Timestamp = {
+      val today: java.util.Date = Calendar.getInstance.getTime
+      val timeFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss")
+      val now: String = timeFormat.format(today)
+      val currentDate = java.sql.Timestamp.valueOf(now)
+      currentDate
+    }
+    val now = getCurrentTimestamp
+    val timestampFormatted =  new SimpleDateFormat("yyyyMMddHHmmss")
+    val timestamp = timestampFormatted.format(now)
+    val filename = "fifa"+timestamp
+    val ExistingFifaData = spark.read.option("endian", "little")
+      .option("encoding", "UTF-8").option("Header", "true").csv("C:\\Project\\Output\\Fifa\\*\\")
+    ExistingFifaData.show()
+    Read_FifaData
+    // Reading the data from fifa HDFS Path
+    val NewData = Read_FifaData.join(ExistingFifaData,  Seq("rownum"),  "leftanti")
+
+    NewData.show()
+    // Writing  the new data to HDFS Path
+    if(NewData.count() ==  1){
+
+      NewData.write.option("Header", "true").csv(args(1) + "/" + s"$filename")
+    }
+    else {
+      print("Now new record fetch")
+
+    }
 
 
     //# Selective Columns for Analysis
@@ -48,35 +79,39 @@ object Fifa_data {
       .withColumn("GKPositioning", when(col("GKPositioning").isNull, 0).otherwise(col("GKPositioning")))
       .withColumn("GKReflexes", when(col("GKReflexes").isNull, 0).otherwise(col("GKReflexes")))
 
-    Fifa_Clean_Data.printSchema()
+   Fifa_Clean_Data.printSchema()
 
 
     //# cleaning Wage and Value columns from currency to normal numbers
     val wagedf = Read_FifaData.withColumn("wages", (regexp_replace(regexp_replace($"wage", "€", ""), "K", "").cast("Int") * 1000).cast("Decimal(10,2)")).drop("Wage")
     val valuedf = Read_FifaData.withColumn("Value", when(col("Value").contains("M"), (regexp_replace(regexp_replace($"Value", "€", ""), "M", "").cast("float") * 1000000).cast("Decimal(20,2)"))
-      .otherwise(when(col("Value").contains("K"), (regexp_replace(regexp_replace($"Value", "€", ""), "K", "000")))))
+      .otherwise(when(col("Value").contains("K"), regexp_replace(regexp_replace($"Value", "€", ""), "K", "000"))))
 
 
     //#Getting top club having leftfooted midfielder under age 30
-    Fifa_Clean_Data.filter($"Position".isin("RWM", "RM", "RCM", "CM", "CAM", "CDM", "LCM", "LM", "LWM") && $"Preferred Foot" === "Left" && $"Age" < "30")
+    val leftfooted_midfielder=Fifa_Clean_Data.filter($"Position".isin("RWM", "RM", "RCM", "CM", "CAM", "CDM", "LCM", "LM", "LWM") && $"Preferred Foot" === "Left" && $"Age" < "30")
       .withColumn("leftmidfielder_count", count("Club").over(Window.partitionBy("Club")))
       .select("Club", "leftmidfielder_count")
       .dropDuplicates()
-      .orderBy(desc("leftmidfielder_count")).show(false)
+      .orderBy(desc("leftmidfielder_count"))
+
+   leftfooted_midfielder.show(false)
 
     //strongest team by overall rating for a 4-4-2 formation
-    Fifa_Clean_Data.filter($"Position".isin("GK", "RB", "CB", "RCB", "CB", "LCB", "LB", "RM", "RWM", "LCM", "CM", "RCM", "CM", "LM", "LWM", "RF", "CF", "LF", "ST"))
+   val Strong_442formation= Fifa_Clean_Data.filter($"Position".isin("GK", "RB", "CB", "RCB", "CB", "LCB", "LB", "RM", "RWM", "LCM", "CM", "RCM", "CM", "LM", "LWM", "RF", "CF", "LF", "ST"))
       .withColumn("Avg_Rating", avg("Overall").over(Window.partitionBy("Club")))
       .select("Club", "Avg_Rating").dropDuplicates()
       .withColumn("Rank", row_number().over(Window.orderBy(desc("Avg_Rating"))))
 
+    Strong_442formation.show(false)
 
     //#expensive squad value in the world
-    val Expensive_squadValue = valuedf.withColumn("squad_value", sum(("Value")).over(Window.partitionBy("Nationality")))
+    val Expensive_squadValue = valuedf.withColumn("squad_value", sum("Value").over(Window.partitionBy("Nationality")))
       .select("Nationality", "squad_value").dropDuplicates().withColumn("Rank", row_number().over(Window.orderBy(desc("squad_value")))).where("Rank == 1")
-    val squad_wages = wagedf.withColumn("Squad_wage", sum("wages").over(Window.partitionBy(("Nationality"))))
+    val squad_wages = wagedf.withColumn("Squad_wage", sum("wages").over(Window.partitionBy("Nationality")))
       .select("Nationality", "Squad_wage").dropDuplicates().withColumn("Rank", row_number().over(Window.orderBy(desc("Squad_wage")))).where("Rank == 1")
-    val compare_nation = if (Expensive_squadValue.join(squad_wages, Seq("Nationality"), "Inner").count() == 1) {
+
+     if (Expensive_squadValue.join(squad_wages, Seq("Nationality"), "Inner").count() == 1) {
       print("Strongest squad value having Highest wages")
     } else {
       print("Strongest squad value does not have Highest wages")
@@ -89,9 +124,9 @@ object Fifa_data {
   val Highest_wagebyPositon=wagedf.withColumn("Avg_wage",avg("wages").over(Window.partitionBy("Position")))
                                   .select("Position","Avg_wage")
                                   .dropDuplicates()
-    .withColumn("Rank",row_number().over(Window.orderBy(desc("Avg_wage")))).show(false)
+    .withColumn("Rank",row_number().over(Window.orderBy(desc("Avg_wage"))))
 
-
+     Highest_wagebyPositon.show(false)
 
     //#TO find out Avg of attribute of player for Goalkeeper Rating
     val Avg_GoalKeepers = Fifa_Clean_Data.filter($"Position".isin("GK") && $"Overall" > 80)
@@ -128,7 +163,9 @@ object Fifa_data {
       ,avg("GKHandling").alias("avg_GKHandling")
       ,avg("GKKicking").alias("avg_GKKicking")
       ,avg("GKPositioning").alias("avg_GKPositioning")
-      ,avg("GKReflexes").alias("GKReflexes1")).show()
+      ,avg("GKReflexes").alias("GKReflexes1"))
+
+    Avg_GoalKeepers.show(false)
 
     //# checking for 5 attributes to be consider for Good Stricker by taking avg of attributes
 
@@ -165,7 +202,9 @@ object Fifa_data {
           ,avg("GKHandling").alias("avg_GKHandling")
           ,avg("GKKicking").alias("avg_GKKicking")
           ,avg("GKPositioning").alias("avg_GKPositioning")
-          ,avg("GKReflexes").alias("GKReflexes")).show()
+          ,avg("GKReflexes").alias("GKReflexes"))
+
+    Avg_Stricker.show(false)
 
       //#Saving Dataframe in Postgre with relevent attribute
       val Postgre_file=Fifa_Clean_Data.select($"Overall".cast("Integer").alias("Overall_Rating"),
@@ -176,9 +215,12 @@ object Fifa_data {
       $"Wage".cast("Decimal(20,5)"),
       $"Value".cast("Decimal(20,2)"),
       $"joined".cast("Date"),
-      $"Age".cast("Integer")).printSchema()
-//Write data into Postgre:-(Commnet i dont postgre connection)
-  //    Postgre_file.write.option('driver', 'org.postgresql.Driver'').jdbc(url_connect, table, mode, properties)
+      $"Age".cast("Integer"))
+    Postgre_file.printSchema()
+//Write data into Postgre:-
+    Postgre_file.write.mode(PropertiesLoader.mode).jdbc(PropertiesLoader.url_connect,PropertiesLoader.dbtable,properties)
+
+
   }
 
 }

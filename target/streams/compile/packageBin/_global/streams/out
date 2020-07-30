@@ -1,7 +1,27 @@
-[debug] Packaging C:\Users\vn022vj\Downloads\Fifa_data\target\scala-2.11\fifa_data_2.11-0.1.jar ...
+[debug] Packaging C:\Users\vn022vj\Downloads\Fifa_data_Analysis-master\target\scala-2.11\fifa_data_2.11-0.1.jar ...
 [debug] Input file mappings:
+[debug] 	com
+[debug] 	  C:\Users\vn022vj\Downloads\Fifa_data_Analysis-master\target\scala-2.11\classes\com
+[debug] 	com\mavric
+[debug] 	  C:\Users\vn022vj\Downloads\Fifa_data_Analysis-master\target\scala-2.11\classes\com\mavric
+[debug] 	com\mavric\fifa
+[debug] 	  C:\Users\vn022vj\Downloads\Fifa_data_Analysis-master\target\scala-2.11\classes\com\mavric\fifa
+[debug] 	com\mavric\fifa\spark
+[debug] 	  C:\Users\vn022vj\Downloads\Fifa_data_Analysis-master\target\scala-2.11\classes\com\mavric\fifa\spark
+[debug] 	com\mavric\fifa\spark\PropertiesLoader$.class
+[debug] 	  C:\Users\vn022vj\Downloads\Fifa_data_Analysis-master\target\scala-2.11\classes\com\mavric\fifa\spark\PropertiesLoader$.class
+[debug] 	com\mavric\fifa\spark\PropertiesLoader.class
+[debug] 	  C:\Users\vn022vj\Downloads\Fifa_data_Analysis-master\target\scala-2.11\classes\com\mavric\fifa\spark\PropertiesLoader.class
+[debug] 	com\mavric\fifa\spark\SparkConnection.class
+[debug] 	  C:\Users\vn022vj\Downloads\Fifa_data_Analysis-master\target\scala-2.11\classes\com\mavric\fifa\spark\SparkConnection.class
 [debug] 	Fifa_data$.class
-[debug] 	  C:\Users\vn022vj\Downloads\Fifa_data\target\scala-2.11\classes\Fifa_data$.class
+[debug] 	  C:\Users\vn022vj\Downloads\Fifa_data_Analysis-master\target\scala-2.11\classes\Fifa_data$.class
 [debug] 	Fifa_data.class
-[debug] 	  C:\Users\vn022vj\Downloads\Fifa_data\target\scala-2.11\classes\Fifa_data.class
+[debug] 	  C:\Users\vn022vj\Downloads\Fifa_data_Analysis-master\target\scala-2.11\classes\Fifa_data.class
+[debug] 	Fifa_read_write$.class
+[debug] 	  C:\Users\vn022vj\Downloads\Fifa_data_Analysis-master\target\scala-2.11\classes\Fifa_read_write$.class
+[debug] 	Fifa_read_write$delayedInit$body.class
+[debug] 	  C:\Users\vn022vj\Downloads\Fifa_data_Analysis-master\target\scala-2.11\classes\Fifa_read_write$delayedInit$body.class
+[debug] 	Fifa_read_write.class
+[debug] 	  C:\Users\vn022vj\Downloads\Fifa_data_Analysis-master\target\scala-2.11\classes\Fifa_read_write.class
 [debug] Done packaging.
