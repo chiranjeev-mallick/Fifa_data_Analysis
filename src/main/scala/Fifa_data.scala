@@ -5,7 +5,7 @@ import java.text.SimpleDateFormat
 import java.util.Calendar
 
 import com.mavric.fifa.spark.PropertiesLoader
-import com.mavric.fifa.spark.PropertiesLoader.properties
+import com.mavric.fifa.spark.PropertiesLoader.prop
 import org.apache.spark.sql.functions._
 import org.apache.spark.sql.expressions.Window
 
@@ -218,8 +218,7 @@ object Fifa_data {
       $"Age".cast("Integer"))
     Postgre_file.printSchema()
 //Write data into Postgre:-
-    Postgre_file.write.mode(PropertiesLoader.mode).jdbc(PropertiesLoader.url_connect,PropertiesLoader.dbtable,properties)
-
+    Postgre_file.write.mode(PropertiesLoader.mode).jdbc(PropertiesLoader.url_connect,PropertiesLoader.dbtable,prop)
 
   }
 

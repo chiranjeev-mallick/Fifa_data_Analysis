@@ -4,16 +4,16 @@ import java.util.Properties
 object PropertiesLoader {
 
   val url = getClass.getResource("C:\\Users\\vn022vj\\Downloads\\Fifa_data_Analysis-master\\src\\main\\resource\\postgre.properties")
-  val properties: Properties = new Properties()
+  val prop: Properties = new Properties()
+
   //Postgressql Specific Properties
 
-  val driver = properties.getProperty("driver")
-  val host =properties.getProperty("host")
-  val port = properties.getProperty("port")
- val username = properties.getProperty("username")
-  val password = properties.getProperty("password")
-  val dbtable = properties.getProperty("dbtable")
-  val mode = properties.getProperty("ovmode")
-  val url_connect = properties.getProperty("oracleurl")
+  val driver = prop.getProperty("driver")
+  val port = prop.getProperty("port")
+ val username = prop.getProperty("username")
+  val password = prop.getProperty("password")
+  val dbtable = prop.getProperty("dbtable")
+  val mode = prop.getProperty("ovmode")
+  val url_connect = prop.getProperty("URL")
 
 }
